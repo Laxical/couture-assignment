@@ -23,12 +23,10 @@ export default function InventoryScrollPageClient() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [total, setTotal] = useState(0);
-
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true); // IMPORTANT: start true
-  const [bootstrapped, setBootstrapped] = useState(false); // first-load guard
+  const [loading, setLoading] = useState(false);
+  const [bootstrapped, setBootstrapped] = useState(false);
 
-  // filters
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState(defaultCategory);
   const [sort, setSort] = useState("");
@@ -37,14 +35,7 @@ export default function InventoryScrollPageClient() {
 
   const loaderRef = useRef<HTMLDivElement | null>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const prevFiltersRef = useRef({
-    search,
-    category,
-    sort,
-    order,
-    stockFilter,
-  });
+  const prevFiltersRef = useRef({ search, category, sort, order, stockFilter });
 
   const applyClientSort = (list: Product[]) => {
     if (!sort) return list;
@@ -60,26 +51,15 @@ export default function InventoryScrollPageClient() {
     return list;
   };
 
-  const loadProducts = async (
-    currentPage: number,
-    currentFilters: {
-      search: string;
-      category: string;
-      sort: string;
-      order: string;
-      stockFilter: "all" | "in" | "out";
-    },
-    shouldReplace: boolean
-  ) => {
-    if (loading && bootstrapped) return;
+  const loadProducts = async (currentPage: number, shouldReplace: boolean) => {
+    setLoading(true);
 
     const skip = (currentPage - 1) * PAGE_SIZE;
-    setLoading(true);
+    const currentFilters = { search, category, sort, order, stockFilter };
 
     try {
       let data: PaginatedResponse;
 
-      // SEARCH + CATEGORY
       if (currentFilters.search && currentFilters.category) {
         const raw = await fetchByCategory({
           category: currentFilters.category,
@@ -97,11 +77,7 @@ export default function InventoryScrollPageClient() {
         setTotal(filtered.length);
         const slice = filtered.slice(skip, skip + PAGE_SIZE);
         setProducts((prev) => (shouldReplace ? slice : [...prev, ...slice]));
-        return;
-      }
-
-      // SEARCH ONLY
-      if (currentFilters.search) {
+      } else if (currentFilters.search) {
         data = await searchProducts({
           q: currentFilters.search,
           limit: PAGE_SIZE,
@@ -115,10 +91,7 @@ export default function InventoryScrollPageClient() {
 
         setTotal(data.total);
         setProducts((prev) => (shouldReplace ? list : [...prev, ...list]));
-      }
-
-      // CATEGORY ONLY
-      else if (currentFilters.category) {
+      } else if (currentFilters.category) {
         data = await fetchByCategory({
           category: currentFilters.category,
           limit: PAGE_SIZE,
@@ -132,10 +105,7 @@ export default function InventoryScrollPageClient() {
 
         setTotal(data.total);
         setProducts((prev) => (shouldReplace ? list : [...prev, ...list]));
-      }
-
-      // NORMAL FLOW
-      else {
+      } else {
         const effectiveSort =
           currentFilters.sort || (currentFilters.order ? "title" : "");
 
@@ -156,19 +126,16 @@ export default function InventoryScrollPageClient() {
       console.error("Failed loading products", err);
     } finally {
       setLoading(false);
-      if (!bootstrapped) setBootstrapped(true); // Mark first load as done
+      setBootstrapped(true);
     }
   };
 
-  // Load Categories Once
   useEffect(() => {
     getCategories().then(setCategories);
   }, []);
 
-  // Handle Filter + Page Logic
   useEffect(() => {
     const prevFilters = prevFiltersRef.current;
-
     const filtersChanged =
       prevFilters.search !== search ||
       prevFilters.category !== category ||
@@ -180,33 +147,24 @@ export default function InventoryScrollPageClient() {
       setProducts([]);
       setTotal(0);
       setPage(1);
+      setBootstrapped(false);
 
-      prevFiltersRef.current = {
-        search,
-        category,
-        sort,
-        order,
-        stockFilter,
-      };
-
-      loadProducts(1, { search, category, sort, order, stockFilter }, true);
-      return;
-    }
-
-    if (page > 1) {
-      loadProducts(page, { search, category, sort, order, stockFilter }, false);
-    } else {
-      loadProducts(page, { search, category, sort, order, stockFilter }, true);
+      prevFiltersRef.current = { search, category, sort, order, stockFilter };
+      loadProducts(1, true);
+    } else if (page > 1) {
+      loadProducts(page, false);
+    } else if (!bootstrapped) {
+      loadProducts(1, true);
     }
   }, [page, search, category, sort, order, stockFilter]);
 
-  // Infinite Scroll
   useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) => {
         if (
           entries[0].isIntersecting &&
           !loading &&
+          bootstrapped &&
           products.length > 0 &&
           products.length < total
         ) {
@@ -218,13 +176,14 @@ export default function InventoryScrollPageClient() {
 
     if (loaderRef.current) obs.observe(loaderRef.current);
     return () => obs.disconnect();
-  }, [products, total, loading]);
+  }, [products, total, loading, bootstrapped]);
 
-  // Search debounce
   const onSearch = (v: string) => {
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     searchTimeoutRef.current = setTimeout(() => setSearch(v), 400);
   };
+
+  const hasMoreProducts = products.length < total;
 
   return (
     <div className="min-h-screen bg-background">
@@ -251,10 +210,11 @@ export default function InventoryScrollPageClient() {
           category={category}
         />
 
-        {/* Prevent Not Found Flicker */}
         <ProductGrid products={products} bootstrapped={bootstrapped} />
 
-        <InfiniteLoader ref={loaderRef} loading={loading} />
+        {bootstrapped && hasMoreProducts && (
+          <InfiniteLoader ref={loaderRef} loading={loading} />
+        )}
       </div>
     </div>
   );

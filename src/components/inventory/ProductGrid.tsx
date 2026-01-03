@@ -12,11 +12,7 @@ export default function ProductGrid({
   bootstrapped: boolean;
 }) {
   if (!bootstrapped) {
-    return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-        <InfiniteLoader />
-      </div>
-    );
+    return <InfiniteLoader loading={true} />;
   }
 
   if (products.length === 0) {
@@ -37,11 +33,13 @@ export default function ProductGrid({
             />
           </svg>
         </div>
+
         <h3 className="text-xl font-semibold text-foreground mb-2">
           No products found
         </h3>
+
         <p className="text-muted-foreground text-center max-w-md">
-          Try adjusting your filters or search terms to find what you're looking
+          Try adjusting your filters or search terms to find what you’re looking
           for.
         </p>
       </div>
