@@ -1,4 +1,6 @@
-import { Category } from "@/types/product";
+"use client";
+
+import type { Category } from "@/types/product";
 
 interface Props {
   onSearch: (v: string) => void;
@@ -18,53 +20,84 @@ export default function FiltersBar({
   categories,
 }: Props) {
   return (
-    <div className="flex flex-wrap gap-4 mb-6">
-      <input
-        placeholder="Search products..."
-        className="border p-2 rounded w-64"
-        onChange={(e) => onSearch(e.target.value)}
-      />
+    <div className="bg-white rounded-xl border border-border p-6 mb-8 shadow-sm">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:gap-3">
+        {/* Search Input */}
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-foreground mb-2">
+            Search Products
+          </label>
+          <input
+            placeholder="Type to search..."
+            className="w-full px-4 py-2.5 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/30 transition"
+            onChange={(e) => onSearch(e.target.value)}
+          />
+        </div>
 
-      <select
-        className="border p-2 rounded"
-        onChange={(e) => setSort(e.target.value)}
-      >
-        <option value="">Sort By</option>
-        <option value="title">Name</option>
-        <option value="price">Price</option>
-        <option value="rating">Rating</option>
-      </select>
+        {/* Sort Dropdown */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-2">
+            Sort By
+          </label>
+          <select
+            className="px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition cursor-pointer"
+            onChange={(e) => setSort(e.target.value)}
+          >
+            <option value="">Sort By</option>
+            <option value="title">Name</option>
+            <option value="price">Price</option>
+            <option value="rating">Rating</option>
+          </select>
+        </div>
 
-      <select
-        className="border p-2 rounded"
-        onChange={(e) => setOrder(e.target.value as any)}
-      >
-        <option value="">Order</option>
-        <option value="asc">ASC</option>
-        <option value="desc">DESC</option>
-      </select>
+        {/* Order Dropdown */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-2">
+            Order
+          </label>
+          <select
+            className="px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition cursor-pointer"
+            onChange={(e) => setOrder(e.target.value as any)}
+          >
+            <option value="">Order</option>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </div>
 
-      <select
-        className="border p-2 rounded"
-        onChange={(e) => setCategory(e.target.value)}
-      >
-        <option value="">All Categories</option>
-        {categories.map((c) => (
-          <option key={c.slug} value={c.slug}>
-            {c.name}
-          </option>
-        ))}
-      </select>
+        {/* Category Dropdown */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-2">
+            Category
+          </label>
+          <select
+            className="px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition cursor-pointer"
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="">All Categories</option>
+            {categories.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {/* STOCK FILTER */}
-      <select
-        className="border p-2 rounded"
-        onChange={(e) => setStockFilter(e.target.value as any)}
-      >
-        <option value="all">Any Stock</option>
-        <option value="in">In Stock</option>
-        <option value="out">Out of Stock</option>
-      </select>
+        {/* Stock Filter Dropdown */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-2">
+            Stock
+          </label>
+          <select
+            className="px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition cursor-pointer"
+            onChange={(e) => setStockFilter(e.target.value as any)}
+          >
+            <option value="all">Any Stock</option>
+            <option value="in">In Stock</option>
+            <option value="out">Out of Stock</option>
+          </select>
+        </div>
+      </div>
     </div>
   );
 }

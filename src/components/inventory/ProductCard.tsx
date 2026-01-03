@@ -1,41 +1,56 @@
-import { Product } from "@/types/product";
+"use client";
+
+import type { Product } from "@/types/product";
 
 export default function ProductCard({ p }: { p: Product }) {
   const inStock = p.stock > 0;
 
   return (
     <div
-      className="rounded-xl border shadow-sm hover:shadow-xl transition cursor-pointer bg-white overflow-hidden"
+      className="rounded-xl border border-border shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer bg-card overflow-hidden hover:scale-105 transform"
       onClick={() => (window.location.href = `/inventory/${p.id}`)}
     >
-      <div className="relative w-full h-48 bg-gray-100">
+      {/* Product Image */}
+      <div className="relative w-full h-48 bg-muted flex items-center justify-center overflow-hidden">
         <img
-          src={p.thumbnail}
+          src={p.thumbnail || "/placeholder.svg"}
           alt={p.title}
-          className="w-full h-full object-contain p-2"
+          className="w-full h-full object-contain p-3 hover:scale-110 transition-transform duration-300"
         />
 
+        {/* Stock Badge */}
         <span
-          className={`absolute top-2 right-2 text-xs px-3 py-1 rounded-full font-semibold ${
-            inStock ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+          className={`absolute top-3 right-3 text-xs px-3 py-1 rounded-full font-semibold transition-all ${
+            inStock
+              ? "bg-emerald-100 text-emerald-700"
+              : "bg-red-100 text-red-700"
           }`}
         >
           {inStock ? "In Stock" : "Out of Stock"}
         </span>
       </div>
 
+      {/* Product Info */}
       <div className="p-4">
-        <span className="inline-block px-3 py-1 text-xs rounded-full bg-blue-100 text-blue-700 mb-2">
+        {/* Category Badge */}
+        <span className="inline-block px-2.5 py-1 text-xs rounded-full bg-primary/10 text-primary font-medium mb-2.5">
           {p.category}
         </span>
 
-        <h2 className="font-semibold text-lg line-clamp-2">{p.title}</h2>
+        {/* Title */}
+        <h2 className="font-semibold text-sm text-foreground line-clamp-2 mb-1.5">
+          {p.title}
+        </h2>
 
-        <p className="text-gray-500 text-sm line-clamp-2">{p.description}</p>
+        {/* Description */}
+        <p className="text-muted-foreground text-xs line-clamp-2 mb-3">
+          {p.description}
+        </p>
 
-        <div className="flex items-center justify-between mt-3">
-          <span className="font-bold text-blue-700">${p.price}</span>
-          <span className="text-sm text-yellow-600">⭐ {p.rating}</span>
+        {/* Price and Rating */}
+        <div className="flex items-center justify-between pt-2 border-t border-border">
+          <span className="font-bold text-primary text-sm">${p.price}</span>
+          <span className="text-xs text-accent font-medium">⭐ {p.rating}</span>
         </div>
       </div>
     </div>
