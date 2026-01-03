@@ -226,29 +226,15 @@ export default function InventoryScrollPageClient() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="p-8 max-w-7xl mx-auto">
-        <div className="mb-10">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div>
-              <h1 className="text-4xl font-extrabold tracking-tight">
+      <div className="px-6 py-10 max-w-[1400px] mx-auto">
+        <div className="mb-12">
+          <div className="flex items-start justify-between flex-wrap gap-6">
+            <div className="space-y-3">
+              <h1 className="text-5xl font-bold tracking-tight text-foreground">
                 <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                  Inventory Dashboard
+                  Inventory
                 </span>
               </h1>
-
-              <p className="text-muted-foreground mt-2 text-lg">
-                Real-time visibility into your catalogue performance
-              </p>
-            </div>
-
-            <div className="flex gap-3">
-              <span className="px-4 py-2 rounded-xl bg-primary/10 text-primary border border-primary/20 text-sm font-semibold">
-                {total} Products
-              </span>
-
-              <span className="px-4 py-2 rounded-xl bg-secondary/10 text-secondary border border-secondary/20 text-sm font-semibold">
-                {categories.length} Categories
-              </span>
             </div>
           </div>
         </div>

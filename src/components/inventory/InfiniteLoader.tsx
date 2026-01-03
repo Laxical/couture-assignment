@@ -6,7 +6,7 @@ interface Props {
   loading: boolean;
 }
 
-const PLACEHOLDERS = 8; // 2 rows (4 per row in large grid)
+const PLACEHOLDERS = 8;
 
 const InfiniteLoader = forwardRef(function Loader(
   { loading }: Props,
