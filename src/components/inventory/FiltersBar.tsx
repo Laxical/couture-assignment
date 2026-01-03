@@ -9,6 +9,7 @@ interface Props {
   setCategory: (v: string) => void;
   setStockFilter: (v: "all" | "in" | "out") => void;
   categories: Category[];
+  category: string;
 }
 
 export default function FiltersBar({
@@ -18,6 +19,7 @@ export default function FiltersBar({
   setCategory,
   setStockFilter,
   categories,
+  category,
 }: Props) {
   return (
     <div className="bg-white rounded-xl border border-border p-6 mb-8 shadow-sm">
@@ -71,6 +73,7 @@ export default function FiltersBar({
             Category
           </label>
           <select
+            value={category}
             className="px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 transition cursor-pointer"
             onChange={(e) => setCategory(e.target.value)}
           >

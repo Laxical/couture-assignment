@@ -1,3 +1,5 @@
+import LoadingScreen from "@/components/shared/LoadingScreen";
+
 export default function Loading() {
-  return null;
+  return <LoadingScreen />;
 }

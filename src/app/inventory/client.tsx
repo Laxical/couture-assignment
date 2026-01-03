@@ -78,7 +78,6 @@ export default function InventoryScrollPageClient() {
     try {
       let data: PaginatedResponse;
 
-      // --- SEARCH + CATEGORY (backend can't do both)
       if (currentFilters.search && currentFilters.category) {
         const raw = await fetchByCategory({
           category: currentFilters.category,
@@ -228,13 +227,30 @@ export default function InventoryScrollPageClient() {
   return (
     <div className="min-h-screen bg-background">
       <div className="p-8 max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-2">
-            Inventory Overview
-          </h1>
-          <p className="text-muted-foreground">
-            Manage and browse all products in your inventory
-          </p>
+        <div className="mb-10">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h1 className="text-4xl font-extrabold tracking-tight">
+                <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                  Inventory Dashboard
+                </span>
+              </h1>
+
+              <p className="text-muted-foreground mt-2 text-lg">
+                Real-time visibility into your catalogue performance
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <span className="px-4 py-2 rounded-xl bg-primary/10 text-primary border border-primary/20 text-sm font-semibold">
+                {total} Products
+              </span>
+
+              <span className="px-4 py-2 rounded-xl bg-secondary/10 text-secondary border border-secondary/20 text-sm font-semibold">
+                {categories.length} Categories
+              </span>
+            </div>
+          </div>
         </div>
 
         <FiltersBar
@@ -244,6 +260,7 @@ export default function InventoryScrollPageClient() {
           setCategory={setCategory}
           setStockFilter={setStockFilter}
           categories={categories}
+          category={category}
         />
 
         <ProductGrid products={products} />

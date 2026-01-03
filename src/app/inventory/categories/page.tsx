@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getCategories, fetchByCategory } from "@/lib/api";
+import LoadingScreen from "@/components/shared/LoadingScreen";
 
 interface CategoryCard {
   name: string;
@@ -48,24 +49,26 @@ export default function CategoriesOverview() {
   }, []);
 
   if (loading) {
-    return (
-      <div className="p-8">
-        <div className="text-center text-muted-foreground">
-          Loading categories...
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-2">
-          Product Catalogue
-        </h1>
-        <p className="text-muted-foreground">
-          Browse our complete collection of products by category
-        </p>
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="mb-10">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h1 className="text-4xl font-extrabold tracking-tight">
+              <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                Product Catalogue
+              </span>
+            </h1>
+
+            <p className="text-muted-foreground mt-2 text-lg">
+              Explore product categories and drill down into detailed inventory
+              views
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
