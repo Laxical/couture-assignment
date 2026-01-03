@@ -25,7 +25,8 @@ export default function InventoryScrollPageClient() {
   const [total, setTotal] = useState(0);
 
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // IMPORTANT: start true
+  const [bootstrapped, setBootstrapped] = useState(false); // first-load guard
 
   // filters
   const [search, setSearch] = useState("");
@@ -70,7 +71,7 @@ export default function InventoryScrollPageClient() {
     },
     shouldReplace: boolean
   ) => {
-    if (loading) return;
+    if (loading && bootstrapped) return;
 
     const skip = (currentPage - 1) * PAGE_SIZE;
     setLoading(true);
@@ -78,6 +79,7 @@ export default function InventoryScrollPageClient() {
     try {
       let data: PaginatedResponse;
 
+      // SEARCH + CATEGORY
       if (currentFilters.search && currentFilters.category) {
         const raw = await fetchByCategory({
           category: currentFilters.category,
@@ -93,13 +95,12 @@ export default function InventoryScrollPageClient() {
         filtered = applyClientSort(filtered);
 
         setTotal(filtered.length);
-
         const slice = filtered.slice(skip, skip + PAGE_SIZE);
         setProducts((prev) => (shouldReplace ? slice : [...prev, ...slice]));
         return;
       }
 
-      // --- SEARCH ONLY
+      // SEARCH ONLY
       if (currentFilters.search) {
         data = await searchProducts({
           q: currentFilters.search,
@@ -116,7 +117,7 @@ export default function InventoryScrollPageClient() {
         setProducts((prev) => (shouldReplace ? list : [...prev, ...list]));
       }
 
-      // --- CATEGORY ONLY
+      // CATEGORY ONLY
       else if (currentFilters.category) {
         data = await fetchByCategory({
           category: currentFilters.category,
@@ -133,7 +134,7 @@ export default function InventoryScrollPageClient() {
         setProducts((prev) => (shouldReplace ? list : [...prev, ...list]));
       }
 
-      // --- NORMAL
+      // NORMAL FLOW
       else {
         const effectiveSort =
           currentFilters.sort || (currentFilters.order ? "title" : "");
@@ -155,6 +156,7 @@ export default function InventoryScrollPageClient() {
       console.error("Failed loading products", err);
     } finally {
       setLoading(false);
+      if (!bootstrapped) setBootstrapped(true); // Mark first load as done
     }
   };
 
@@ -249,7 +251,8 @@ export default function InventoryScrollPageClient() {
           category={category}
         />
 
-        <ProductGrid products={products} />
+        {/* Prevent Not Found Flicker */}
+        <ProductGrid products={products} bootstrapped={bootstrapped} />
 
         <InfiniteLoader ref={loaderRef} loading={loading} />
       </div>

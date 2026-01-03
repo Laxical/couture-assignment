@@ -1,7 +1,16 @@
-import ProductPrice from "./ProductPrice"; // Import ProductPrice component
+"use client";
+
+import { useState } from "react";
+import ProductPrice from "./ProductPrice";
 
 export default function ProductHero({ product }: any) {
   const inStock = product.stock > 0;
+
+  const images = product.images?.length
+    ? product.images
+    : [product.thumbnail || "/placeholder.svg"];
+
+  const [selectedImage, setSelectedImage] = useState(images[0]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-16 items-start">
@@ -9,22 +18,25 @@ export default function ProductHero({ product }: any) {
       <div className="space-y-6 lg:w-[55%]">
         <div className="aspect-[4/5] w-full bg-[#F9F8F6] border border-border/40 rounded-2xl shadow-sm flex items-center justify-center overflow-hidden transition-all duration-500 hover:shadow-xl group">
           <img
-            src={product.thumbnail || "/placeholder.svg"}
+            src={selectedImage}
             className="max-w-[85%] max-h-[85%] object-contain p-6 transition-transform duration-700 group-hover:scale-105"
             alt={product.title}
           />
         </div>
 
-        {product.images?.length > 1 && (
-          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-            {product.images.map((img: string, i: number) => (
+        {images.length > 1 && (
+          <div className="flex gap-4 overflow-x-auto px-2 py-4 scrollbar-hide">
+            {images.map((img: string, i: number) => (
               <button
                 key={i}
-                className="flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-primary rounded-xl overflow-hidden"
+                onClick={() => setSelectedImage(img)}
+                className={`flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-primary rounded-xl overflow-hidden border ${
+                  selectedImage === img ? "border-primary" : "border-border/40"
+                }`}
               >
                 <img
-                  src={img || "/placeholder.svg"}
-                  className="w-24 h-24 object-contain border border-border/40 rounded-xl bg-card p-2 hover:bg-muted transition-colors"
+                  src={img}
+                  className="w-24 h-24 object-contain rounded-xl bg-card p-2 hover:bg-muted transition-colors"
                 />
               </button>
             ))}

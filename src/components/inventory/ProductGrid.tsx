@@ -2,8 +2,23 @@
 
 import type { Product } from "@/types/product";
 import ProductCard from "./ProductCard";
+import InfiniteLoader from "./InfiniteLoader";
 
-export default function ProductGrid({ products }: { products: Product[] }) {
+export default function ProductGrid({
+  products,
+  bootstrapped,
+}: {
+  products: Product[];
+  bootstrapped: boolean;
+}) {
+  if (!bootstrapped) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+        <InfiniteLoader />
+      </div>
+    );
+  }
+
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 px-4">

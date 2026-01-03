@@ -3,7 +3,7 @@
 import { type ForwardedRef, forwardRef } from "react";
 
 interface Props {
-  loading: boolean;
+  loading?: boolean;
 }
 
 const PLACEHOLDERS = 8;
