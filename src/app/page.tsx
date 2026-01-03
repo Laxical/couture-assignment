@@ -20,7 +20,7 @@ export default function Home() {
         </div>
 
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted/50 border border-border/50 text-xs font-medium text-muted-foreground mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-muted/50 border border-border/50 text-xs font-medium text-muted-foreground mb-8">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/40 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
@@ -28,7 +28,7 @@ export default function Home() {
             New Inventory Experience
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-serif text-foreground mb-8 leading-[1.1] tracking-tight max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-150 text-balance">
+          <h1 className="text-5xl md:text-7xl font-serif text-foreground mb-8 leading-[1.1] tracking-tight max-w-4xl mx-auto text-balance">
             Elevated Commerce,{" "}
             <span className="italic font-normal italic text-muted-foreground">
               Seamlessly
@@ -36,12 +36,12 @@ export default function Home() {
             Managed
           </h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 text-pretty">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed text-pretty">
             Discover a refined portal for exploring products and categories.
             Built with precision for the modern inventory experience.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-500">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/inventory">
               <Button
                 size="lg"
